@@ -52,22 +52,26 @@ function starttosort() {
             break;
     }
 }
+
 // ==============Создание односвязного списка=======================
 class newNode {
-    constructor(data, next__ = null) {
+    constructor(data, index, next__ = null) {
         this.data = data;
         this.next_ = next__;
+        this.index = index
     }
 }
+
 class LinkerdList {
     constructor() {
         this.head = null;
         this.tail = null;
         this.append(-Infinity)
+        this.len = 0
     }
 
     append(data) {
-        const node = new newNode(data);
+        const node = new newNode(data, this.len);
         if (this.tail) {
             this.tail.next_ = node;
         }
@@ -75,12 +79,13 @@ class LinkerdList {
             this.head = node;
         }
         this.tail = node;
+        this.len++;
     }
 
-    *for_(current_item =null){
+    * for_(current_item = null) {
         // check it for more details: https://learn.javascript.ru/generators
-        if (! current_item) {
-            if ( this.head.data === -Infinity){
+        if (!current_item) {
+            if (this.head.data === -Infinity) {
                 current_item = this.head.next_;
             } else {
                 current_item = this.head
@@ -89,9 +94,28 @@ class LinkerdList {
         }
         // let next_item = current_item.next_
         // let deep = 0
-        while (current_item !== null){
+        while (current_item !== null) {
             yield current_item
             current_item = current_item.next_
+
+        }
+    }
+
+    * for_before_len(max_iterations, current_item = null) {
+        // check it for more details: https://learn.javascript.ru/generators
+        if (!current_item) {
+            if (this.head.data === -Infinity) {
+                current_item = this.head.next_;
+            } else {
+                current_item = this.head
+            }
+
+        }
+        let len_ = 1
+        while (len_ <= max_iterations && current_item !== null) {
+            yield current_item
+            current_item = current_item.next_
+            len_ += 1
 
         }
     }
@@ -113,15 +137,17 @@ class LinkerdList {
     //     console.log(before_one.data, before_one.next_.data, before_one.next_.next_.data, "|", before_two.data,  before_two.next_.data, before_two.next_.next_.data, );
     //     return [one, two];
     // }
-    static move_items(one, two){
-        [one.data, two.data] = [two.data, one.data]
-        return [one, two]
+    static move_items(one, two) {
+        if (one && two) {
+            [one.data, two.data] = [two.data, one.data];
+        }
+        return [one, two];
 
     }
 
-    copy(){
+    copy() {
         const new_list = new LinkerdList()
-        for(let item of this.for_()){
+        for (let item of this.for_()) {
             new_list.append(item.data)
         }
         return new_list
@@ -146,13 +172,13 @@ class LinkerdList {
 
 const selectionSort2 = (list_) => {
     let last_start_item = list_.head
-    for(let start_item of list_.for_()){
+    for (let start_item of list_.for_()) {
         let min_ = {data: Infinity};
         let before_min = {}
-        console.log(start_item.data)
+        // console.log(start_item.data)
         let last_item = last_start_item;
-        for(let item of list_.for_(start_item)){
-            if (min_.data > item.data){
+        for (let item of list_.for_(start_item)) {
+            if (min_.data > item.data) {
                 min_ = item
                 before_min = last_item
             }
@@ -160,7 +186,7 @@ const selectionSort2 = (list_) => {
         }
         // LinkerdList.move_items(start_item, min_, last_start_item, before_min)
         LinkerdList.move_items(start_item, min_)
-        console.log([...list_.for_()].map(i => i.data), "|",  min_.data)
+        // console.log([...list_.for_()].map(i => i.data), "|", min_.data)
         last_start_item = min_;
 
     }
@@ -168,7 +194,50 @@ const selectionSort2 = (list_) => {
 }
 
 const minMaxSelectSort2 = (list_) => {
+    // let last_start_item = list_.head
+    let count = list_.len
+    for (let start_item of list_.for_before_len(list_.len / 2)) {
+        let min_ = {data: Infinity};
+        let max_ = {data: -Infinity};
+        // console.log(start_item.data)
+        let old_item = null
+        for (let item of list_.for_before_len(count, start_item)) {
+            // console.log(item)
+            if (min_.data > item.data) {
+                min_ = item
+            }
+            if (item.data >= max_.data) {
+                max_ = item
+            }
+            old_item = item
+        }
+        let finish_item = old_item
 
+        count -= 2
+
+        // LinkerdList.move_items(start_item, min_, last_start_item, before_min)
+        if (finish_item && min_ && start_item && max_ && (
+            min_.index === finish_item.index) && (
+                start_item.index === max_.index)) {
+            LinkerdList.move_items(max_, min_);
+            // console.log([...list_.for_()].map(i => i.data), "|", "min is -", min_.data, 'max is -', max_.data)
+            continue
+        }else if (finish_item && min_ && min_.index === finish_item.index) {
+            finish_item = min_;
+            // console.log('--*1')
+        } else if (start_item && max_ && start_item.index === max_.index) {
+            max_ = min_;
+            // console.log('--*2')
+        }
+        // console.log(start_item, min_)
+        // console.log([...list_.for_()].map(i => i.data), "|", min_.data, max_.data)
+
+        LinkerdList.move_items(start_item, min_)
+        LinkerdList.move_items(finish_item, max_)
+        // console.log([...list_.for_()].map(i => i.data), "|", "min is -", min_.data, 'max is -', max_.data)
+        // last_start_item = min_;
+    }
+    return list_
 }
 
 
@@ -197,6 +266,7 @@ function getPartOrdArray() {
     }
     return [newPartOrdArr, partOrderedList];
 }
+
 let pushPartUpPosl = (size, percent) => {
     let size_up_arr = Math.floor((size * percent) / 100);
     //console.log(size_up_arr);
@@ -255,6 +325,7 @@ function get_disordered_arr() {
 
     return [disArr, disorderedList];
 }
+
 // ==================для задания процента упорядоченности===================================
 function percentappear() {
     if (
@@ -266,6 +337,7 @@ function percentappear() {
         percent.classList.remove('appear');
     }
 }
+
 // =================сортировка методом прямого выбора=========================================================
 const selectionSort = (arr) => {
     //классический метод прямого выбора
@@ -352,10 +424,48 @@ const selectionSortMinMax = (arr) => {
 //     options: chartOptions,
 // });
 
-let obj_ = new LinkerdList()
 
-let no_sorted_array = [10, 9 ,8,7,6,5,4,3,2,1,0]
-no_sorted_array.map(i => obj_.append(i));
-console.log(no_sorted_array);
 
-console.log([...selectionSort2(obj_.copy()).for_()].map(i => i.data))
+const test_function = (arr) => {
+    let obj_ = new LinkerdList()
+    arr.map(i => obj_.append(i));
+    const my_sorted_arr_1 = [...selectionSort2(obj_.copy()).for_()].map(i => i.data)
+    const my_sorted_arr_2 = [...minMaxSelectSort2(obj_.copy()).for_()].map(i => i.data)
+    let sorted_arr = arr.map(i => i);
+    sorted_arr.sort((a, b) => a - b)
+    if (!sorted_arr.every ((el, ind) => (el === my_sorted_arr_1[ind]) && (el === my_sorted_arr_2[ind]))){
+        console.log(arr)
+        console.log(sorted_arr)
+        console.log(my_sorted_arr_1)
+        console.log(my_sorted_arr_2)
+        throw 'неправильно отсортировал'
+    }
+}
+const testing = () => {
+
+    let min_len = 0
+    let max_len = 100
+    let min_item = -2000
+    let max_item = 1000
+    let index_;
+    for (index_ = 0; index_ < 100; ++index_) {
+        let arr = []
+        let len_ = Math.round(Math.random() * (max_len - min_len)) + min_len
+        for (i = 0; i < len_; ++i) {
+            arr.push(Math.round(Math.random() * (max_item - min_item)) + min_item)
+        }
+        test_function(arr)
+        console.log('тест', index_ + 1)
+    }
+    console.log('тестирование прошло успешно')
+
+}
+
+testing()
+
+// arr = [5, -5, -6];
+// let obj_ = new LinkerdList()
+// arr.map(i => obj_.append(i));
+// // const my_sorted_arr_1 = [...selectionSort2(obj_.copy()).for_()].map(i => i.data)
+// const my_sorted_arr_2 = [...minMaxSelectSort2(obj_.copy()).for_()].map(i => i.data)
+// console.log(my_sorted_arr_2)
