@@ -54,42 +54,124 @@ function starttosort() {
 }
 // ==============Создание односвязного списка=======================
 class newNode {
-    constructor(data, next = null) {
+    constructor(data, next__ = null) {
         this.data = data;
-        this.next = next;
+        this.next_ = next__;
     }
 }
 class LinkerdList {
     constructor() {
         this.head = null;
         this.tail = null;
+        this.append(-Infinity)
     }
+
     append(data) {
         const node = new newNode(data);
         if (this.tail) {
-            this.tail.next = node;
+            this.tail.next_ = node;
         }
         if (!this.head) {
             this.head = node;
         }
         this.tail = node;
     }
+
+    *for_(current_item =null){
+        // check it for more details: https://learn.javascript.ru/generators
+        if (! current_item) {
+            if ( this.head.data === -Infinity){
+                current_item = this.head.next_;
+            } else {
+                current_item = this.head
+            }
+
+        }
+        // let next_item = current_item.next_
+        // let deep = 0
+        while (current_item !== null){
+            yield current_item
+            current_item = current_item.next_
+
+        }
+    }
+
+    // static move_items(one, two, before_one = {}, before_two = {}){
+    //     // check it for more details: https://learn.javascript.ru/static-properties-methods
+    //     console.log(before_one.data, one.data, one.next_.data, "|", before_two.data,  two.data, two.next_.data, );
+    //
+    //     let last_one_tail = one.next_;
+    //     let last_two_tail = two.next_;
+    //
+    //
+    //
+    //     one.next_ = last_two_tail;
+    //     two.next_ = last_one_tail;
+    //
+    //     before_one.next_ = two;
+    //     before_two.next_ = one
+    //     console.log(before_one.data, before_one.next_.data, before_one.next_.next_.data, "|", before_two.data,  before_two.next_.data, before_two.next_.next_.data, );
+    //     return [one, two];
+    // }
+    static move_items(one, two){
+        [one.data, two.data] = [two.data, one.data]
+        return [one, two]
+
+    }
+
+    copy(){
+        const new_list = new LinkerdList()
+        for(let item of this.for_()){
+            new_list.append(item.data)
+        }
+        return new_list
+    }
+
     bubbleSort() {
         let last = this.tail;
         while (last) {
             let node = this.head;
             while (node != last) {
-                let next = node.next;
-                if (node.value > next.value) {
+                let next_ = node.next_;
+                if (node.value > next_.value) {
                     // swap
-                    [node.value, next.value] = [next.value, node.value];
+                    [node.value, next_.value] = [next_.value, node.value];
                 }
-                node = next;
+                node = next_;
             }
             last = last.prev;
         }
     }
 }
+
+const selectionSort2 = (list_) => {
+    let last_start_item = list_.head
+    for(let start_item of list_.for_()){
+        let min_ = {data: Infinity};
+        let before_min = {}
+        console.log(start_item.data)
+        let last_item = last_start_item;
+        for(let item of list_.for_(start_item)){
+            if (min_.data > item.data){
+                min_ = item
+                before_min = last_item
+            }
+            last_item = item
+        }
+        // LinkerdList.move_items(start_item, min_, last_start_item, before_min)
+        LinkerdList.move_items(start_item, min_)
+        console.log([...list_.for_()].map(i => i.data), "|",  min_.data)
+        last_start_item = min_;
+
+    }
+    return list_
+}
+
+const minMaxSelectSort2 = (list_) => {
+
+}
+
+
 const orderedList = new LinkerdList();
 const disorderedList = new LinkerdList();
 const partOrderedList = new LinkerdList();
@@ -269,3 +351,11 @@ const selectionSortMinMax = (arr) => {
 //     data: speedData,
 //     options: chartOptions,
 // });
+
+let obj_ = new LinkerdList()
+
+let no_sorted_array = [10, 9 ,8,7,6,5,4,3,2,1,0]
+no_sorted_array.map(i => obj_.append(i));
+console.log(no_sorted_array);
+
+console.log([...selectionSort2(obj_.copy()).for_()].map(i => i.data))
