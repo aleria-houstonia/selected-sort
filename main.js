@@ -95,7 +95,7 @@ const disorderedList = new LinkerdList();
 const partOrderedList = new LinkerdList();
 const orderedReversedList = new LinkerdList();
 
-// =================Создание массивов================================
+// =================Создание массивов и заполнение массивов, односвязных списков================================
 function getPartOrdArray() {
     for (let i = 0; i < size.value; i++) {
         partOrdArr.push(Math.floor(1 + Math.random() * size.value));
@@ -186,6 +186,7 @@ function percentappear() {
 }
 // =================сортировка методом прямого выбора=========================================================
 const selectionSort = (arr) => {
+    //классический метод прямого выбора
     let start = performance.now();
     for (let i = 0, l = arr.length, k = l - 1; i < k; i++) {
         let indexMin = i;
@@ -204,6 +205,7 @@ const selectionSort = (arr) => {
     return arr;
 };
 const selectionSortMinMax = (arr) => {
+    //метод прямого выбора с одновременным поиском макс и мин
     let minindex = 0,
         maxindex = 0;
     for (let j = 0; j < arr.Length / 2; j++) {
@@ -235,7 +237,7 @@ const selectionSortMinMax = (arr) => {
     }
     return arr;
 };
-// ===================  =========================================
+// =================== для графического результата =========================================
 // let speedCanvas = document.getElementById("speedChart");
 
 // Chart.defaults.global.defaultFontFamily = "Lato";
