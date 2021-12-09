@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <link rel="stylesheet" href="style.css" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous"
+        />
+    </head>
+    <body>
+        <div class="main">
+            <div class="main-title">
+                Сравнение и анализ <br />
+                алгоритмов сортировки методом <br />
+                прямого выбора
+            </div>
+            <div class="main-table">
+                <!-- <div class="main-inp-size-text">Количество элементов:</div> -->
+                <div class="main-inp">
+                    <input
+                        type="number"
+                        placeholder="Количество элементов"
+                        class="main-inp-size inp-value"
+                    />
+                </div>
+                <select
+                    onchange="percentappear()"
+                    class="form-select drop1 select-main"
+                    aria-label="Default select example"
+                >
+                    <option selected>
+                        Выбрать последовательность <br />сортировки
+                    </option>
+                    <option value="Упорядоченная последовательность">
+                        Упорядоченная последовательность
+                    </option>
+                    <option value="Неупорядоченная последовательность">
+                        Неупорядоченная последовательность
+                    </option>
+                    <option
+                        value="Упорядоченная последовательность в обратном порядке"
+                    >
+                        Упорядоченная последовательность в обратном порядке
+                    </option>
+                    <option value="Частично упорядоченная последовательность">
+                        Частично упорядоченная последовательность
+                    </option>
+                </select>
+                <div class="main-inp">
+                    <input
+                        type="number"
+                        placeholder="процент упорядоченности"
+                        min="0"
+                        max="100"
+                        class="percent-value"
+                    />
+                </div>
+            </div>
+            <button class="btn-sort" onclick="starttosort()">
+                Сортировать
+            </button>
+        </div>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"
+        ></script>
+        <script src="main.js"></script>
+    </body>
+</html>
